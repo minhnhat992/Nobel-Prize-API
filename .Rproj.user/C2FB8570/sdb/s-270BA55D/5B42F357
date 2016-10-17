@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(httr)\nlibrary(dplyr)\nlibrary(plyr)\nlibrary(jsonlite)\nlibrary(xlsx)\n\n# connect to APIs\n\ncountry <- GET(\"http://api.nobelprize.org/v1/country.json\")\n\n# get main content\ncountry_ct <- content(country, as = \"text\", encoding = \"UTF-8\") %>% \n  jsonlite::fromJSON(simplifyDataFrame = TRUE, flatten =TRUE)\n\n\n# convert main content to data frame\ncountry_df <- data.frame(country_ct$countries)\n\n# write excel\nwrite.xlsx(country_df, file = \"country.xlsx\")\n",
+    "created" : 1476587932830.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "942607938",
+    "id" : "5B42F357",
+    "lastKnownWriteTime" : 1476716169,
+    "last_content_update" : 1476716169573,
+    "path" : "E:/R/nobel/nobel_country.R",
+    "project_path" : "nobel_country.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

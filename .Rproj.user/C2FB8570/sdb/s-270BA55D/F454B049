@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(httr)\nlibrary(dplyr)\nlibrary(plyr)\nlibrary(jsonlite)\n\n# connect to APIs\nlaureate <- GET(\"http://api.nobelprize.org/v1/laureate.json\")\n\n# get main content\nlaureate_ct <- content(laureate, as = \"text\", encoding = \"UTF-8\") %>% \n  jsonlite::fromJSON(simplifyDataFrame = TRUE, flatten =TRUE)\n\n# convert main content to data frame\nlaureate_df <- data.frame(laureate_ct$laureates)\n\n# loop to untangle nested column.We need to \"un-nest\" the 3rd column, which can be achieved by using cbind to\n# combine \"un-nested\" 3rd column with the rest in cartesian format\n\n\nlaureate_final <- data.frame()\n\nfor (val in 1: nrow(laureate_df)){\n  \n  test <- data.frame(cbind(laureate_df[val,-13], laureate_df[,13][val]))\n  \n  laureate_final <- rbind.fill(laureate_final, test)\n  \n  test <- data.frame()\n\n}\n\n# There's still one nested column (17th column) in the new table. Need to do the loop again\n\nlaureate_final_df <- data.frame()\n\nfor (row in 1:nrow(laureate_final)) {\n  \n  if (length(unlist(laureate_final[,17][row])) != 0) #some of the values in nested columns are empty. Need an if statment to take care of that.\n    {\n    \n    test <- data.frame(cbind(laureate_final[row,-17],laureate_final[,17][row])) \n    \n    } \n  \n  else \n    \n    {\n    \n      test <- data.frame(laureate_final[row,-17])\n    \n    }\n  \n  laureate_final_df <- rbind.fill(laureate_final_df, test)\n  \n  test <- data.frame()\n}\n\n# write excel file\nwrite.xlsx(laureate_final_df, file = \"laureate.xlsx\")\n",
+    "created" : 1476583173333.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1362534706",
+    "id" : "F454B049",
+    "lastKnownWriteTime" : 1476716443,
+    "last_content_update" : 1476716443734,
+    "path" : "E:/R/nobel/nobel_laureate.R",
+    "project_path" : "nobel_laureate.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

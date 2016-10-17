@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(httr)\nlibrary(dplyr)\nlibrary(plyr)\nlibrary(jsonlite)\nlibrary(xlsx)\n\n# connect to APIs\nprize <- GET(\"http://api.nobelprize.org/v1/prize.json\")\n\n# get the main contents\nprize_ct <- content(prize, as = \"text\", encoding = \"UTF-8\") %>% \n  jsonlite::fromJSON(simplifyDataFrame = TRUE, flatten =TRUE)\n\n\n# convert main contents to data frame\nprize_df <- data.frame(prize_ct$prizes)\n\n\n# loop to untangle nested column.We need to \"un-nest\" the 3rd column, which can be achieved by using cbind to\n# combine \"un-nested\" 3rd column with the rest in cartesian format\n\n\nprizes_final <- data.frame()\n\nfor (val in 1:nrow(prize_df)){\n  \n  test <- data.frame(cbind(prize_df[val,c(1,2,4)], prize_df[,3][val]))\n  \n  prizes_final <- rbind.fill(prizes_final, test)\n\n  }\n\n\n# reorder column\nprizes_final <- select(prizes_final,\n                       year,\n                       category,\n                       id,\n                       firstname,\n                       surname,\n                       motivation,\n                       share,\n                       overallMotivation)\n\n# write excel file\nwrite.xlsx(prizes_final, \"prizes.xlsx\")\n\n",
+    "created" : 1476583153108.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1676908176",
+    "id" : "86425F58",
+    "lastKnownWriteTime" : 1476716131,
+    "last_content_update" : 1476716131911,
+    "path" : "E:/R/nobel/nobel_prize.R",
+    "project_path" : "nobel_prize.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
